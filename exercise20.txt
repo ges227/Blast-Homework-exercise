@@ -1,0 +1,16 @@
+Results:
+The final program is found in exercise20.py. It runs a local blastp program found in the directory specified within, and assumes the query file, called "drosoph-robosome.fasta" is at the current directory, and the blast database "yeast-ribosome.fasta" is onle level deeper in a folder called "ex20blastdb". It uses the Bio.Blast NCBIXML module for parsing and the NccbiblastpCommandline for running blast.
+
+Method:
+Prior to running Blast using the specifed program, query and db file, and saving the resulting xml file in "ex20result.xml", the program checks whether such a file has already been created from a previous run.
+The program then opens that result file into "result_handle", and using the NCBIXML parser, iterates through each blast result in the file. Each result corresponds to a single drosophila query that has been used to search through the yeast ribosome protein database, thus for each result, the program prints out the query. It later figures out whether a good yeast match has been found for that query, in which case it prints out the relevant data, otherwise, it prints out the line "No good yeast match found for this protein query." 
+The program prepares a dictionary,"blastresultdict", in which it will save the e-value, score and title of the best alignments for each protein, where the gi-id of the protein query serves as the key, and those three data points will form a "tuple" value. 
+When going through all alignments for a query protein, the program uses the fact that blast results are already ordered from best to worst matches, thus it reads just the first of the alignments for a the blast result, and because some alignments have multiple hsps, also ordered from best to worst, it reads just the first of those HSP's.
+For each HSP, the program checks whether the evalue is less than 1e-5, constituting a significant alignment. If that is the case, the program updates blastresultdict, with the query num key, and the hsp's e-value, score, and alignment title. The program also prints these out to the command line, along with the positives and gaps. If no key-value pair for this query has been added to the dictionary, no good match was found for this protein, and the line stating this is printed out. The file-handle is then closed.
+To find the most highly conserved protein amongs the two sets of ribosome proteins, the program then sorts out the blast results according to their score to pick out the topmost item. During testing, I also sorted them out according to their evalue, printing both sorted lists out, and I found the same protein was the topmost one.
+The the GI ID key of this topmost protein is then printed out, along with the yeast record it corresponds to, with the option of also printing out their alignment's evalue and score.
+
+Evaluations:
+The program avoids data errors/confusion by checking whether a blast result file has already been saved.
+The program is dependent on the assumption that blast always orders its alignment and high scoring pairs results from best to worst.
+
